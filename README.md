@@ -17,7 +17,7 @@
 | ORM        | Spring Data JPA          |
 | Database   | MySQL                    |
 | Build Tool | Gradle (Kotlin DSL)      |
-| 기타         | PasswordEncoder (BCrypt) |
+
 
 ---
 

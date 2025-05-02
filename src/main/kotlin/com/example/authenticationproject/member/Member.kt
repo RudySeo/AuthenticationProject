@@ -1,0 +1,22 @@
+package com.example.authenticationproject.member
+
+import jakarta.persistence.*
+
+@Entity
+class Member(
+    @Column(nullable = false, unique = true)
+    val username: String,
+
+    @Column(nullable = false)
+    var password: String,
+
+    @Column(nullable = false, unique = true)
+    val email: String
+) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null
+
+}
+
+

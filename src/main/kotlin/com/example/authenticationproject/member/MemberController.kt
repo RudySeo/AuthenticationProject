@@ -12,9 +12,16 @@ import org.springframework.web.bind.annotation.RestController
 class MemberController(private val memberService: MemberService) {
 
     @PostMapping("/signup")
-    fun signup(@RequestBody request: MemberRequest): ResponseEntity<String> {
+    fun signup(@RequestBody request: MemberDto.SignupRequest): ResponseEntity<String> {
+
         memberService.signup(request)
         return ResponseEntity.status(HttpStatus.CREATED).body("회원가입이 완료되었습니다.")
+    }
+
+    @PostMapping("/login")
+    fun login(@RequestBody request: MemberDto.LoginRequest): ResponseEntity<MemberDto.LoginResponse> {
+
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.login(request))
     }
 
 }

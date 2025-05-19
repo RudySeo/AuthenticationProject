@@ -1,5 +1,6 @@
 package com.example.authenticationproject.member
 
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException
 import org.springframework.stereotype.Service
 
 @Service
@@ -25,5 +26,11 @@ class MemberService(
         return MemberDto.LoginResponse(email = findMember.get().email)
 
 
+    }
+
+    fun getMemberById(id: Long): MemberDto.MemberResponse {
+        val member = memberRepository.findById(id).orElseThrow { NotFoundException() }
+        
+        return MemberDto.MemberResponse(member.username, member.email)
     }
 }

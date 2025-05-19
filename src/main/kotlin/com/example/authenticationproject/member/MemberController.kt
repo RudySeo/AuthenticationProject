@@ -2,10 +2,7 @@ package com.example.authenticationproject.member
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/member")
@@ -22,6 +19,12 @@ class MemberController(private val memberService: MemberService) {
     fun login(@RequestBody request: MemberDto.LoginRequest): ResponseEntity<MemberDto.LoginResponse> {
 
         return ResponseEntity.status(HttpStatus.OK).body(memberService.login(request))
+    }
+
+    @GetMapping("/{id}")
+    fun getUser(@PathVariable id: Long): ResponseEntity<MemberDto.MemberResponse> {
+        
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.getMemberById(id))
     }
 
 }

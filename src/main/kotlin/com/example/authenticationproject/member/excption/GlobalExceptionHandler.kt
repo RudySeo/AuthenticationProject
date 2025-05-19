@@ -1,5 +1,6 @@
 import com.example.authenticationproject.member.excption.ErrorResponse
 import org.hibernate.exception.ConstraintViolationException
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -34,5 +35,14 @@ class GlobalExceptionHandler {
             message = "서버 내부 오류가 발생했습니다. (${ex.localizedMessage})"
         )
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error)
+    }
+
+    @ExceptionHandler(NotFoundException::class)
+    fun handleMemberNotFound(ex: NotFoundException): ResponseEntity<ErrorResponse> {
+        val error = ErrorResponse(
+            code = "404",
+            message = ex.message ?: "해당 유저를 찾을 수 없습니다."
+        )
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error)
     }
 }

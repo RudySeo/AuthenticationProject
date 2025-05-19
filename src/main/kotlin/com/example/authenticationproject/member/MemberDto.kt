@@ -23,4 +23,9 @@ class MemberDto {
     data class LoginResponse(
         val email: String,
     )
+
+    data class MemberResponse(
+        val username: String,
+        val email: String
+    )
 }

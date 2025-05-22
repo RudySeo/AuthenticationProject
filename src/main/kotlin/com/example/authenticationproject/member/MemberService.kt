@@ -19,18 +19,16 @@ class MemberService(
 
     fun login(request: MemberDto.LoginRequest): MemberDto.LoginResponse {
 
-        val findMember = memberRepository.findByEmail(request.email) ?: throw IllegalStateException(
-            "User not found"
-        )
+        val findMember =
+            memberRepository.findByEmail(request.email).orElseThrow { NotFoundException() }
 
-        return MemberDto.LoginResponse(email = findMember.get().email)
-
+        return MemberDto.LoginResponse(email = findMember.email)
 
     }
 
     fun getMemberById(id: Long): MemberDto.MemberResponse {
         val member = memberRepository.findById(id).orElseThrow { NotFoundException() }
-        
+
         return MemberDto.MemberResponse(member.username, member.email)
     }
 }

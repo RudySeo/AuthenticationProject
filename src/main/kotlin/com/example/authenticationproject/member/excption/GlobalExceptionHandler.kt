@@ -46,4 +46,13 @@ class GlobalExceptionHandler {
         )
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error)
     }
+
+    @ExceptionHandler(NotFoundException::class)
+    fun handleNotFound(ex: NotFoundException): ResponseEntity<ErrorResponse> {
+        val error = ErrorResponse(
+            code = "404",
+            message = ex.message ?: "해당 데이터를 찾을 수 없습니다."
+        )
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error)
+    }
 }

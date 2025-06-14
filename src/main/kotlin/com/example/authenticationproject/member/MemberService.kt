@@ -12,7 +12,8 @@ class MemberService(
         val user = Member(
             username = request.username,
             password = request.password,
-            email = request.email
+            email = request.email,
+            role = Role.USER,
         )
         memberRepository.save(user)
     }

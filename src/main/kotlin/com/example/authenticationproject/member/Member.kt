@@ -4,8 +4,8 @@ import jakarta.persistence.*
 
 @Entity
 class Member(
-    @Column(nullable = false, unique = true)
-    val username: String,
+    @Column(nullable = false)
+    var username: String,
 
     @Column(nullable = false)
     var password: String,

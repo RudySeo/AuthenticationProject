@@ -3,6 +3,7 @@ import org.hibernate.exception.ConstraintViolationException
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
@@ -37,7 +38,7 @@ class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error)
     }
 
-    @ExceptionHandler(NotFoundException::class)
+    @ExceptionHandler(UsernameNotFoundException::class)
     fun handleMemberNotFound(ex: NotFoundException): ResponseEntity<ErrorResponse> {
         val error = ErrorResponse(
             code = "404",

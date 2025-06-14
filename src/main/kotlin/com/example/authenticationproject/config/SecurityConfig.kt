@@ -2,10 +2,10 @@ package com.example.authenticationproject.config
 
 import com.example.authenticationproject.utill.jwt.JwtAuthenticationFilter
 import com.example.authenticationproject.utill.jwt.JwtTokenProvider
-import org.springframework.beans.factory.annotation.Configurable
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
@@ -15,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
-@Configurable
+@Configuration
 @EnableWebSecurity
 class SecurityConfig
     (
@@ -24,17 +24,12 @@ class SecurityConfig
 ) {
 
     /**
-     * UserDetailsService와 PasswordEncoder를 명시적으로 설정해 인증 로직이 UserDetails 기반으로 동작하도록 구성합니다
-     * 로그인 처리 시 AuthenticationProvider를 통해 인증을 위임하는 데 사용됩니다
+     * 인증 매니저 등록
      */
 
     @Bean
-    fun authenticationManager(http: HttpSecurity): AuthenticationManager {
-        val authBuilder = http.getSharedObject(AuthenticationManagerBuilder::class.java)
-        authBuilder
-            .userDetailsService(userDetailsService)
-            .passwordEncoder(passwordEncoder())
-        return authBuilder.build()
+    fun authenticationManager(authConfig: AuthenticationConfiguration): AuthenticationManager {
+        return authConfig.authenticationManager
     }
 
     /**

@@ -15,15 +15,10 @@ class MemberController(private val memberService: MemberService) {
         return ResponseEntity.status(HttpStatus.CREATED).body("회원가입이 완료되었습니다.")
     }
 
-    @PostMapping("/login")
-    fun login(@RequestBody request: MemberDto.LoginRequest): ResponseEntity<MemberDto.LoginResponse> {
-
-        return ResponseEntity.status(HttpStatus.OK).body(memberService.login(request))
-    }
 
     @GetMapping("/{id}")
     fun getUser(@PathVariable id: Long): ResponseEntity<MemberDto.MemberResponse> {
-        
+
         return ResponseEntity.status(HttpStatus.OK).body(memberService.getMemberById(id))
     }
 

@@ -2,6 +2,9 @@ package com.example.authenticationproject.config
 
 import com.example.authenticationproject.utill.jwt.JwtAuthenticationFilter
 import com.example.authenticationproject.utill.jwt.JwtTokenProvider
+import com.example.authenticationproject.utill.security.filter.JwtLoginFilter
+import com.example.authenticationproject.utill.security.handler.JwtAuthenticationFailureHandler
+import com.example.authenticationproject.utill.security.handler.JwtAuthenticationSuccessHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -28,13 +31,12 @@ class SecurityConfig
      */
 
     @Bean
-    fun authenticationManager(authConfig: AuthenticationConfiguration): AuthenticationManager {
-        return authConfig.authenticationManager
-    }
+    fun authenticationManager(
+        authenticationConfiguration: AuthenticationConfiguration
+    ): AuthenticationManager = authenticationConfiguration.authenticationManager
 
     /**
-     * 비밀번호 암호화를 위한 PasswordEncoder 입니다
-     * BCrypt 해싱 함수를 사용하여 사용자 비밀번호를 안전하게 저장 및 비교합니다
+     * 비밀번호 암호화 방식 설정 (BCrypt 사용)
      */
 
     @Bean
@@ -42,14 +44,30 @@ class SecurityConfig
 
 
     @Bean
-    fun filterChain(http: HttpSecurity): SecurityFilterChain {
+    fun filterChain(http: HttpSecurity, authManager: AuthenticationManager): SecurityFilterChain {
+        // 🔐 로그인 요청을 처리하는 커스텀 필터
+        val loginFilter = JwtLoginFilter(
+            authenticationManager = authManager,
+            successHandler = JwtAuthenticationSuccessHandler(jwtTokenProvider),
+            failureHandler = JwtAuthenticationFailureHandler()
+        )
+        loginFilter.setAuthenticationManager(authManager)
+
         return http
+            // CSRF 비활성화 (JWT 기반이므로 필요 없음)
             .csrf { it.disable() }
+            // 세션 미사용 설정 → STATELESS (JWT 방식이기 때문에)
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+
+            // 🔓 인가 설정
             .authorizeHttpRequests {
                 it.requestMatchers("/member/**").permitAll()
                     .anyRequest().authenticated()
             }
+            // 🔐 커스텀 로그인 필터 등록 (/member/login 엔드포인트에서 로그인 처리)
+            .addFilter(loginFilter)
+            
+            // 🛡️ JWT 인증 필터를 UsernamePasswordAuthenticationFilter 이전에 등록
             .addFilterBefore(
                 JwtAuthenticationFilter(jwtTokenProvider, userDetailsService),
                 UsernamePasswordAuthenticationFilter::class.java

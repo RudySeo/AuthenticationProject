@@ -39,7 +39,7 @@ class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UsernameNotFoundException::class)
-    fun handleMemberNotFound(ex: NotFoundException): ResponseEntity<ErrorResponse> {
+    fun handleMemberNotFound(ex: UsernameNotFoundException): ResponseEntity<ErrorResponse> {
         val error = ErrorResponse(
             code = "404",
             message = ex.message ?: "해당 유저를 찾을 수 없습니다."

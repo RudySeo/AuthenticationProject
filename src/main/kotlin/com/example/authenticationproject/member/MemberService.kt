@@ -1,19 +1,17 @@
 package com.example.authenticationproject.member
 
-import com.example.authenticationproject.utill.jwt.JwtTokenProvider
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException
-import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class MemberService(
     private val memberRepository: MemberRepository,
-    private val authenticationManager: AuthenticationManager,
-    private val jwtTokenProvider: JwtTokenProvider,
     private val passwordEncoder: PasswordEncoder
 ) {
 
+    @Transactional
     fun signup(request: MemberDto.SignupRequest) {
         val user = Member(
             username = request.username,
@@ -23,9 +21,10 @@ class MemberService(
         )
         memberRepository.save(user)
     }
-    
+
     fun getMemberById(id: Long): MemberDto.MemberResponse {
-        val member = memberRepository.findById(id).orElseThrow { NotFoundException() }
+        val member = memberRepository.findOneById(id)
+            ?: throw UsernameNotFoundException("ㅇ")
 
         return MemberDto.MemberResponse(member.username, member.email)
     }
